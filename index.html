@@ -207,7 +207,26 @@
             border: 1px solid var(--glass-border);
         }
 
-        /* СТИЛИ ДЛЯ ИВЕНТОВ (полное обновление) */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            margin: 25px 0;
+            border-radius: 25px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* СТИЛИ ДЛЯ ИВЕНТОВ */
         .events-grid {
             display: flex;
             flex-direction: column;
@@ -330,7 +349,7 @@
             margin-left: 10px;
         }
 
-        /* Стили для правил (как в предыдущей версии, без изменений) */
+        /* Стили для правил */
         .rules-container { display: flex; flex-direction: column; gap: 20px; }
         .important-notice { background: var(--warning-bg); border-left: 8px solid var(--accent); border-radius: 25px; padding: 25px 30px; margin-bottom: 25px; backdrop-filter: blur(5px); box-shadow: var(--shadow); }
         .rule-section { background: var(--card-bg); backdrop-filter: blur(5px); border: 1px solid var(--glass-border); border-radius: 30px; padding: 25px 30px; margin-bottom: 15px; box-shadow: var(--shadow); }
@@ -353,6 +372,58 @@
         .tops-table th { text-align: left; padding: 15px 10px; background: var(--accent); color: #1e1b16; font-weight: 600; border-radius: 15px 15px 0 0; }
         .tops-table td { padding: 12px 10px; border-bottom: 1px solid var(--glass-border); }
         .tops-table .rank { font-weight: bold; color: var(--accent); font-size: 1.2rem; }
+
+        /* СТИЛИ ДЛЯ СОЦСЕТЕЙ (НОВАЯ СТРАНИЦА) */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .social-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .social-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .social-card i {
+            font-size: 4rem;
+            transition: transform 0.3s;
+        }
+        .social-card:hover i {
+            transform: scale(1.1);
+        }
+        .social-card span {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: var(--glass-bg);
+            padding: 8px 25px;
+            border-radius: 40px;
+            border: 1px solid var(--glass-border);
+        }
+        .social-card small {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .social-card.discord i { color: #5865F2; }
+        .social-card.youtube i { color: #FF0000; }
+        .social-card.telegram i { color: #26A5E4; }
+        .social-card.vk i { color: #0077FF; }
 
         /* Меню справа */
         .menu-panel {
@@ -426,7 +497,7 @@
         }
         @media (max-width: 500px) {
             .menu-item span { display: none; }
-            .menu-item .disabled-badge { display: none; } /* на узких экранах убираем надпись, чтобы не мешала */
+            .menu-item .disabled-badge { display: none; }
             .rule-item p, .rule-item ul { margin-left: 20px; }
             .event-header { flex-direction: column; text-align: center; }
         }
@@ -458,7 +529,7 @@
                     <p>Наш трейлер (скоро заменим на реальный). Присоединяйся к нам!</p>
                 </div>
 
-                <!-- Страница Правила (полностью сохранена) -->
+                <!-- Страница Правила -->
                 <div class="page" id="page-rules">
                     <h1>Правила сервера</h1>
                     <div class="rules-container">
@@ -637,8 +708,7 @@
                     </div>
                 </div>
 
-
-                <!-- ИВЕНТЫ (ПОЛНОСТЬЮ ОБНОВЛЕНЫ) -->
+                <!-- ИВЕНТЫ -->
                 <div class="page" id="page-events">
                     <h1>Ивенты LegendsRP</h1>
                     <div class="events-grid">
@@ -688,7 +758,7 @@
                             <li>Побеждает последний оставшийся в живых.</li></ol></div>
                         </div>
 
-                        <!-- 5. СТРОИТЕЛЬНЫЙ БАТТЛ (Speed Build) -->
+                        <!-- 4. СТРОИТЕЛЬНЫЙ БАТТЛ (Speed Build) -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-cubes"></i><h2>5. СТРОИТЕЛЬНЫЙ БАТТЛ</h2></div>
                             <div class="event-description">Кто быстрее и креативнее построит задание?</div>
@@ -696,7 +766,7 @@
                             <ol><li>Администратор объявляет тему.</li><li>Игрокам выдается одинаковый набор блоков.</li><li>На постройку дается ровно 15 минут.</li><li>Запрещено использовать готовые схемы из интернета.</li><li>По окончании времени — просмотр и голосование.</li></ol></div>
                         </div>
 
-                        <!-- 7. ЛАБИРИНТ -->
+                        <!-- 5. ЛАБИРИНТ -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-draw-polygon"></i><h2>7. ЛАБИРИНТ</h2></div>
                             <div class="event-description">Тест на память и ориентацию в пространстве. Сможете ли вы выбраться из самой запутанной ловушки?</div>
@@ -704,7 +774,7 @@
                             <ul><li>Вход через портал/дверь. Точка входа одна.</li><li>Бежать можно, летать (элитры) - запрещено. Жемчуг края сквозь стены - запрещено.</li><li>Ломать стены лабиринта ЗАПРЕЩЕНО.</li><li>Ловушки: ямы с лавой, раздатчики со стрелами, скрытые поршни.</li><li>Победа: найти сундук в центре и нажать кнопку / первым коснуться финишного блока.</li></ul></div>
                         </div>
 
-                        <!-- 8. БЕГИ ИЛИ УМРИ -->
+                        <!-- 6. БЕГИ ИЛИ УМРИ -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-running"></i><h2>8. БЕГИ ИЛИ УМРИ</h2></div>
                             <div class="event-description">Только вперед и вверх. Одно неверное движение — и ты в начале.</div>
@@ -712,7 +782,7 @@
                             <ul><li>Старт на линии.</li><li>Преодолеть полосу препятствий прыжками и бегом. Разрушать/добавлять блоки нельзя.</li><li>Падение = телепорт на последний чекпоинт или на старт.</li><li>Чекпоинты фиксируют прогресс.</li><li>Побеждает коснувшийся финального блока первым.</li></ul></div>
                         </div>
 
-                        <!-- 9. КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ? -->
+                        <!-- 7. КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ? -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-question-circle"></i><h2>9. КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ?</h2></div>
                             <div class="event-description">Интеллектуальная викторина. Отвечай на вопросы и зарабатывай внутриигровую валюту.</div>
@@ -720,7 +790,7 @@
                             <ul><li>Игрок против ведущего или все сразу.</li><li>Ведущий дает вопрос и 4 варианта ответа.</li><li>Ответы пишут в чат/ЛС.</li><li>Подсказки (если 1 игрок): 50/50, звонок другу, помощь зала.</li><li>За правильные ответы — очки/деньги. Цепочка из 5 правильных ответов удваивает приз.</li></ul></div>
                         </div>
 
-                        <!-- 10. СПАГЕТТИ-ВЕСТЕРН -->
+                        <!-- 8. СПАГЕТТИ-ВЕСТЕРН -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-bow-arrow"></i><h2>10. СПАГЕТТИ-ВЕСТЕРН</h2></div>
                             <div class="event-description">Двое на мосту над лавой. У каждого лук и 5 стрел. Кто кого перехитрит?</div>
@@ -728,7 +798,7 @@
                             <ul><li>Два игрока, лук и 5 стрел, без брони.</li><li>Арена — узкий мост над лавой/пустотой.</li><li>Сходить с моста = смерть. Атака только из лука.</li><li>Победа: убить противника, заставить упасть, ничья если стрелы кончились.</li></ul></div>
                         </div>
 
-                        <!-- 11. МОБ-АРЕНА -->
+                        <!-- 9. МОБ-АРЕНА -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-dragon"></i><h2>11. МОБ-АРЕНА (Волны)</h2></div>
                             <div class="event-description">Испытание на выживание против полчищ враждебных мобов. Сколько волн ты продержишься?</div>
@@ -736,14 +806,14 @@
                             <ul><li>Одиночно или группой.</li><li>Стартовый набор: деревянное/каменное оружие + хлеб.</li><li>Админ спаунит мобов волнами (сложность растет).</li><li>После каждой 3-й волны — 30 сек передышки.</li><li>Смерть = выход из игры.</li><li>Победа: последний выживший или прохождение всех волн.</li></ul></div>
                         </div>
 
-                        <!-- 12. ЛОТЕРЕЯ / АУКЦИОН -->
+                        <!-- 10. ЛОТЕРЕЯ / АУКЦИОН -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-ticket-alt"></i><h2>12. ЛОТЕРЕЯ / АУКЦИОН</h2></div>
                             <div class="event-section"><h3><i class="fas fa-dice"></i> ЛОТЕРЕЯ</h3><ul><li>Покупка билетов (например, 10 алмазов).</li><li>Розыгрыш через /roll или генератор.</li><li>Победитель забирает супер-приз.</li></ul></div>
                             <div class="event-section"><h3><i class="fas fa-gavel"></i> АУКЦИОН</h3><ul><li>Админ выставляет редкий лот, объявляет стартовую цену.</li><li>Игроки повышают ставки в чате.</li><li>После "Раз... Два... Три..." победитель платит и забирает лот.</li><li>Если денег нет — дисквалификация.</li></ul></div>
                         </div>
 
-                        <!-- 13. ШАХТЕРСКИЕ ГОНКИ -->
+                        <!-- 11. ШАХТЕРСКИЕ ГОНКИ -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-pickaxe"></i><h2>13. ШАХТЕРСКИЕ ГОНКИ</h2></div>
                             <div class="event-description">Кто самый трудолюбивый шахтер? За 30 минут нужно добыть как можно больше ценных ресурсов.</div>
@@ -751,7 +821,7 @@
                             <ul><li>Всем идентичный набор: железная кирка, еда, факелы.</li><li>Все в шахте на одних координатах.</li><li>Таймер 30 минут. Не воровать, не убивать, не использовать свои инструменты.</li><li>По сигналу — подъем, сдача ресурсов админу.</li><li>Победитель забирает добытое или получает приз.</li></ul></div>
                         </div>
 
-                        <!-- 14. ЗАХВАТ ФЛАГА -->
+                        <!-- 12. ЗАХВАТ ФЛАГА -->
                         <div class="event-card">
                             <div class="event-header"><i class="fas fa-flag"></i><h2>14. ЗАХВАТ ФЛАГА</h2></div>
                             <div class="event-description">Командная игра. Укради флаг врага и принеси на свою базу, защищая свой.</div>
@@ -761,16 +831,34 @@
                     </div>
                 </div>
 
-                <!-- Страница Топы (скрыта, но оставлена для возможного будущего использования) -->
+                <!-- НОВАЯ СТРАНИЦА: СОЦСЕТИ -->
+                <div class="page" id="page-social">
+                    <h1>Мы в соцсетях</h1>
+                    <p>Присоединяйся к нашему сообществу, следи за новостями и общайся с другими игроками!</p>
+                    <div class="social-grid">
+                        <a href="https://discord.gg/KjU7j9be44" target="_blank" class="social-card discord">
+                            <i class="fab fa-discord"></i>
+                            <span>Discord</span>
+                            <small>Основной чат, поддержка, ивенты</small>
+                        </a>
+                        <a href="https://t.me/BrawlLegendsOff" target="_blank" class="social-card telegram">
+                            <i class="fab fa-telegram"></i>
+                            <span>Telegram</span>
+                            <small>Новости, анонсы, конкурсы</small>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Страница Топы (скрыта) -->
                 <div class="page" id="page-tops" style="display: none;"></div>
             </div>
 
-            <!-- Правая панель меню -->
+            <!-- Правая панель меню (ДОБАВЛЕН ПУНКТ "СОЦСЕТИ") -->
             <div class="menu-panel" id="menuPanel">
                 <div class="menu-item active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></div>
                 <div class="menu-item" data-page="rules"><i class="fas fa-book"></i><span>Правила</span></div>
                 <div class="menu-item" data-page="events"><i class="fas fa-calendar-check"></i><span>Ивенты</span></div>
-                <!-- Пункт Топы теперь неактивен и содержит надпись "временно не доступен" -->
+                <div class="menu-item" data-page="social"><i class="fas fa-share-alt"></i><span>Соцсети</span></div>
                 <div class="menu-item disabled" data-page="tops"><i class="fas fa-trophy"></i><span>Топы</span><span class="disabled-badge">временно не доступен</span></div>
             </div>
         </div>
@@ -822,7 +910,7 @@
                 localStorage.setItem('legendsRP_theme', isDark ? 'theme-light' : 'theme-dark');
             });
 
-            // Убедимся, что страница топов не открывается (если вдруг кто-то введёт хеш)
+            // Убедимся, что страница топов не открывается
             if (window.location.hash === '#page-tops') {
                 setActivePage('home');
             }
