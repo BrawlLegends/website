@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegendsRP — полуванильный майнкрафт RP</title>
+    <!-- Font Awesome для иконок (бесплатно) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Сброс и базовые стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            transition: background-color 0.3s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            /* Градиент для глубины */
+            background-image: radial-gradient(circle at 30% 40%, rgba(255, 200, 50, 0.15) 0%, transparent 30%),
+                              radial-gradient(circle at 80% 70%, rgba(255, 180, 40, 0.1) 0%, transparent 40%);
+        }
+
+        /* Тема светлая (по умолчанию) */
+        body.theme-light {
+            --bg-base: #f7f5f0;
+            --glass-bg: rgba(255, 250, 240, 0.6);
+            --glass-border: rgba(255, 215, 120, 0.5);
+            --text-primary: #3a2c1b;
+            --text-secondary: #5e4a2e;
+            --accent: #f5b042;
+            --accent-hover: #f39c12;
+            --shadow: 0 8px 32px rgba(255, 200, 70, 0.15);
+            --icon-color: #b57c2a;
+            --card-bg: rgba(255, 245, 220, 0.7);
+            --switch-icon: '\f185';
+            --warning-bg: rgba(245, 176, 66, 0.2);
+        }
+
+        /* Тема тёмная */
+        body.theme-dark {
+            --bg-base: #1e1b16;
+            --glass-bg: rgba(30, 25, 20, 0.7);
+            --glass-border: rgba(245, 176, 66, 0.5);
+            --text-primary: #f0e5d2;
+            --text-secondary: #d4b68a;
+            --accent: #f5b042;
+            --accent-hover: #f39c12;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --icon-color: #f5b042;
+            --card-bg: rgba(40, 35, 30, 0.8);
+            --switch-icon: '\f186';
+            --warning-bg: rgba(245, 176, 66, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+        }
+
+        /* Контейнер приложения */
+        .app {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Шапка с переключателем темы */
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 0 20px;
+        }
+
+        .theme-toggle {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.02);
+            background: var(--accent);
+            color: #1e1b16;
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            color: var(--icon-color);
+        }
+
+        .theme-toggle:hover i {
+            color: #1e1b16;
+        }
+
+        /* Основной блок (левая часть + меню справа) */
+        .main-layout {
+            display: flex;
+            gap: 25px;
+            flex: 1;
+        }
+
+        /* Левая область — контент (стеклянная карточка) */
+        .content-area {
+            flex: 1;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 35px 40px;
+            box-shadow: var(--shadow);
+            min-height: 70vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) var(--glass-bg);
+        }
+
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .content-area::-webkit-scrollbar-track {
+            background: var(--glass-bg);
+            border-radius: 10px;
+        }
+        .content-area::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        /* Страницы */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Заголовки */
+        .page h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+            border-left: 6px solid var(--accent);
+            padding-left: 20px;
+        }
+
+        .page h2 {
+            margin: 35px 0 20px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        .page h3 {
+            font-size: 1.4rem;
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--accent);
+        }
+
+        .page p {
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .page img {
+            max-width: 100%;
+            border-radius: 25px;
+            margin: 20px 0;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--glass-border);
+        }
+
+        /* СТИЛИ ДЛЯ ИВЕНТОВ (полное обновление) */
+        .events-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .event-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .event-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            border-bottom: 2px dashed var(--accent);
+            padding-bottom: 15px;
+        }
+
+        .event-header i {
+            font-size: 2.8rem;
+            color: var(--accent);
+            background: var(--glass-bg);
+            padding: 15px;
+            border-radius: 50%;
+            border: 1px solid var(--glass-border);
+            width: 70px;
+            text-align: center;
+        }
+
+        .event-header h2 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .event-description {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-bottom: 25px;
+            padding-left: 15px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .event-section {
+            margin: 25px 0 20px;
+        }
+
+        .event-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .event-section h3 i {
+            color: var(--accent);
+            font-size: 1.4rem;
+        }
+
+        .event-section h4 {
+            font-size: 1.2rem;
+            margin: 15px 0 8px 10px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .event-section ul, .event-section ol {
+            margin-left: 30px;
+            margin-bottom: 15px;
+        }
+
+        .event-section li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+
+        .role-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .role-item {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            padding: 15px 20px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .role-item strong {
+            color: var(--accent);
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .rule-badge {
+            background: var(--accent);
+            color: #1e1b16;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        /* Стили для правил (как в предыдущей версии, без изменений) */
+        .rules-container { display: flex; flex-direction: column; gap: 20px; }
+        .important-notice { background: var(--warning-bg); border-left: 8px solid var(--accent); border-radius: 25px; padding: 25px 30px; margin-bottom: 25px; backdrop-filter: blur(5px); box-shadow: var(--shadow); }
+        .rule-section { background: var(--card-bg); backdrop-filter: blur(5px); border: 1px solid var(--glass-border); border-radius: 30px; padding: 25px 30px; margin-bottom: 15px; box-shadow: var(--shadow); }
+        .section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; border-bottom: 2px dashed var(--accent); padding-bottom: 15px; }
+        .section-header i { font-size: 2.2rem; color: var(--accent); background: var(--glass-bg); padding: 12px; border-radius: 50%; border: 1px solid var(--glass-border); }
+        .section-header h2 { margin: 0; font-size: 1.9rem; }
+        .rule-item { margin-bottom: 25px; padding-left: 15px; border-left: 3px solid transparent; transition: border-color 0.2s; }
+        .rule-item:hover { border-left-color: var(--accent); }
+        .rule-item h4 { font-size: 1.3rem; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+        .rule-item h4 i { color: var(--accent); width: 28px; font-size: 1.4rem; }
+        .rule-item p { margin-left: 40px; margin-bottom: 8px; }
+        .rule-item ul { margin-left: 60px; list-style-type: none; }
+        .rule-item li { margin: 8px 0; position: relative; padding-left: 20px; }
+        .rule-item li::before { content: "•"; color: var(--accent); font-weight: bold; font-size: 1.4rem; position: absolute; left: 0; top: -4px; }
+        .fine-print { margin-top: 30px; font-style: italic; opacity: 0.9; background: var(--glass-bg); padding: 20px; border-radius: 25px; text-align: center; border: 1px dashed var(--accent); }
+
+        /* Карточки и таблицы */
+        .rule-card { background: var(--card-bg); backdrop-filter: blur(5px); border: 1px solid var(--glass-border); border-radius: 25px; padding: 20px 25px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .tops-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .tops-table th { text-align: left; padding: 15px 10px; background: var(--accent); color: #1e1b16; font-weight: 600; border-radius: 15px 15px 0 0; }
+        .tops-table td { padding: 12px 10px; border-bottom: 1px solid var(--glass-border); }
+        .tops-table .rank { font-weight: bold; color: var(--accent); font-size: 1.2rem; }
+
+        /* Меню справа */
+        .menu-panel {
+            width: 260px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 40px;
+            padding: 30px 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: fit-content;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 18px 20px;
+            border-radius: 30px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .menu-item i { font-size: 1.6rem; width: 30px; color: var(--icon-color); }
+        .menu-item:hover { background: var(--accent); border-color: var(--glass-border); color: #1e1b16; transform: translateX(-5px); }
+        .menu-item:hover i { color: #1e1b16; }
+        .menu-item.active { background: var(--accent); color: #1e1b16; border: 1px solid var(--glass-border); }
+        .menu-item.active i { color: #1e1b16; }
+
+        /* Специальный стиль для неактивного пункта "Топы" */
+        .menu-item.disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            pointer-events: none;
+            filter: grayscale(0.3);
+        }
+        .menu-item.disabled:hover {
+            background: transparent;
+            color: var(--text-primary);
+            transform: none;
+        }
+        .menu-item.disabled:hover i {
+            color: var(--icon-color);
+        }
+        .menu-item .disabled-badge {
+            background: rgba(100, 100, 100, 0.3);
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 30px;
+            margin-left: auto;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            white-space: nowrap;
+        }
+
+        /* Адаптация */
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column-reverse; }
+            .menu-panel { width: 100%; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 15px; border-radius: 50px; }
+            .menu-item { padding: 12px 20px; font-size: 1rem; }
+            .menu-item i { font-size: 1.3rem; }
+            .content-area { padding: 25px; }
+        }
+        @media (max-width: 500px) {
+            .menu-item span { display: none; }
+            .menu-item .disabled-badge { display: none; } /* на узких экранах убираем надпись, чтобы не мешала */
+            .rule-item p, .rule-item ul { margin-left: 20px; }
+            .event-header { flex-direction: column; text-align: center; }
+        }
+        ::selection { background: var(--accent); color: #1e1b16; }
+    </style>
+</head>
+<body class="theme-light">
+    <div class="app">
+        <div class="header">
+            <div class="theme-toggle" id="themeToggle">
+                <i class="fas fa-sun"></i>
+                <span>Светлая тема</span>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <!-- Левая часть: контентные страницы -->
+            <div class="content-area" id="contentArea">
+                <!-- Главная -->
+                <div class="page active" id="page-home">
+                    <h1>Добро пожаловать в LegendsRP!</h1>
+                    <p>**LegendsRP** — полу-ванильный RP режим на сервере **BrawlLegends**, где классическое выживание сочетается с ролевой игрой. Создавай свою историю, строй города, объединяйся с другими игроками и стань настоящей легендой мира.</p>
+                    <img src="https://i.imgur.com/Z7TGgWd.png" alt="Minecraft RPG" style="max-height: 300px; width: 100%; object-fit: cover;">
+                    <h2>Что вас ждёт?</h2>
+                    <p>• Ивенты каждый день<br>• Открытый мир<br>• Дружное комьюнити и экономика<br>• Система территорий</p>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=9Kk5xKzX5X5X5X5X" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    </div>
+                    <p>Наш трейлер (скоро заменим на реальный). Присоединяйся к нам!</p>
+                </div>
+
+                <!-- Страница Правила (полностью сохранена) -->
+                <div class="page" id="page-rules">
+                    <h1>Правила сервера</h1>
+                    <div class="rules-container">
+                        <!-- ВАЖНО: блок с предупреждением -->
+                        <div class="important-notice">
+                            <h3><i class="fas fa-exclamation-triangle" style="margin-right: 10px;"></i> ⚠️ ВАЖНО</h3>
+                            <blockquote>Незнание правил не освобождает от ответственности.</blockquote>
+                            <p>Администрация сервера оставляет за собой право изменять и дополнять правила в любое время.<br>
+                            <strong>Актуальная версия всегда доступна на этом сайте.</strong></p>
+                        </div>
+
+                        <!-- Раздел 1 -->
+                        <div class="rule-section">
+                            <div class="section-header">
+                                <i class="fas fa-shield-halved"></i>
+                                <h2>▰▰▰▰▰▰▰▰ 1. ОБЩИЕ ПРАВИЛА ▰▰▰▰▰▰▰▰</h2>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-hand-peace"></i> 1.1. Уважение к игрокам</h4>
+                                <p>Нецензурная лексика и грубость в чате допускаются, но запрещены оскорбления, унижающие честь и достоинство человека по признаку расы, национальности, религии, а также оскорбления родственников.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-message"></i> 1.2. Спам и флуд</h4>
+                                <p>Запрещено писать бессмысленные сообщения, повторять одно и то же, использовать Caps Lock (ЗАГЛАВНЫЕ БУКВЫ). Наказание (мут) выдается за:</p>
+                                <ul>
+                                    <li>3 и более однотипных сообщений подряд</li>
+                                    <li>Сообщения, занимающие более 5 строк за минуту</li>
+                                </ul>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-bullhorn"></i> 1.3. Реклама</h4>
+                                <p>Запрещена реклама сторонних ресурсов, серверов и любых коммерческих проектов без согласования с администрацией.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-cross"></i> 1.4. Политика и религия</h4>
+                                <p>Запрещены обсуждения политических тем и религиозных конфликтов в общем чате.</p>
+                            </div>
+                        </div>
+
+                        <!-- Раздел 2 -->
+                        <div class="rule-section">
+                            <div class="section-header">
+                                <i class="fas fa-gamepad"></i>
+                                <h2>▰▰▰▰▰▰▰▰ 2. ИГРОВОЙ ПРОЦЕСС ▰▰▰▰▰▰▰▰</h2>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-house-circle-exclamation"></i> 2.1. Гриферство запрещено</h4>
+                                <p>Запрещено разрушать или изменять чужие постройки без разрешения владельца. Это касается ландшафта рядом с постройками.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-ghost"></i> 2.2. Воровство</h4>
+                                <p>Запрещено брать предметы из чужих сундуков, печек, вагонеток и других контейнеров.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-cow"></i> 2.3. Мобы и фермы</h4>
+                                <p>Запрещено создание лаг-машин (ферм, вызывающих сильные лаги сервера). Если ваша ферма слишком нагружает сервер, администрация попросит вас её отключить/переделать.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-seedling"></i> 2.4. Общественные фермы</h4>
+                                <p>На общественных фермах разрешено брать ресурсы, но запрещено:</p>
+                                <ul>
+                                    <li>Ломать сами фермы (механизмы, землю, воду)</li>
+                                    <li>Забирать всё подчистую, не оставляя другим игрокам</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Раздел 3 -->
+                        <div class="rule-section">
+                            <div class="section-header">
+                                <i class="fas fa-signature"></i>
+                                <h2>▰▰▰▰▰▰▰▰ 3. НИКИ ▰▰▰▰▰▰▰▰</h2>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-tag"></i> 3.1. Ники</h4>
+                                <p>Запрещены ники, содержащие:</p>
+                                <ul>
+                                    <li>Оскорбления</li>
+                                    <li>Нецензурную лексику</li>
+                                    <li>Провокационные высказывания</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Раздел 4 -->
+                        <div class="rule-section">
+                            <div class="section-header">
+                                <i class="fas fa-bug"></i>
+                                <h2>▰▰▰▰▰▰▰▰ 4. БАГИ И ЧИТЫ ▰▰▰▰▰▰▰▰</h2>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-skull"></i> 4.1. Читы запрещены</h4>
+                                <p>Запрещены любые модификации клиента, дающие преимущество перед другими игроками:</p>
+                                <ul>
+                                    <li>X-Ray</li>
+                                    <li>Fly</li>
+                                    <li>KillAura</li>
+                                    <li>И подобные</li>
+                                </ul>
+                                <p>✅ <strong>РАЗРЕШЕНЫ:</strong> оптимизационные моды (OptiFine, Sodium) и мини-карты без показа сущностей.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-flask"></i> 4.2. Использование багов</h4>
+                                <p>Запрещено намеренное использование багов и недочетов игры для получения ресурсов или привилегий. О найденных багах нужно сообщать администрации.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-computer-mouse"></i> 4.3. Автокликеры</h4>
+                                <p>Запрещено использование программ для автоматической игры (автокликеры, макросы), если они дают преимущество в AFK-фермах или PvP.</p>
+                            </div>
+                        </div>
+
+                        <!-- Раздел 5 -->
+                        <div class="rule-section">
+                            <div class="section-header">
+                                <i class="fas fa-crown"></i>
+                                <h2>▰▰▰▰▰▰▰▰ 5. ОТНОШЕНИЯ С АДМИНИСТРАЦИЕЙ ▰▰▰▰▰▰▰▰</h2>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-gavel"></i> 5.1. Авторитет администрации</h4>
+                                <p>Запрещено оскорблять, унижать и провоцировать администраторов сервера. Их решения являются окончательными в игровых спорных ситуациях.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-scale-balanced"></i> 5.2. Обжалование наказаний</h4>
+                                <p>Если вы считаете, что были наказаны неправомерно, запрещено устраивать скандалы в чате. Для этого существуют личные сообщения администратору.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-face-angry"></i> 5.3. Ложные доносы</h4>
+                                <p>Запрещено ложное обвинение других игроков в нарушениях с целью получить для них наказание.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-mask"></i> 5.4. Выдача себя за админа</h4>
+                                <p>Запрещено выдавать себя за администратора сервера, использовать похожие ники или пытаться вводить игроков в заблуждение, обещая привилегии.</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-bell"></i> 5.5. Отвлекание админов</h4>
+                                <p>Запрещено отвлекать администрацию по пустякам, спамить в ЛС админам или требовать выдать предметы/права.</p>
+                            </div>
+                        </div>
+
+                        <!-- Раздел 6 -->
+                        <div class="rule-section">
+                            <div class="section-header">
+                                <i class="fas fa-coins"></i>
+                                <h2>▰▰▰▰▰▰▰▰ 6. ТОРГОВЛЯ И ЭКОНОМИКА ▰▰▰▰▰▰▰▰</h2>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-hand-holding-dollar"></i> 6.1. Мошенничество</h4>
+                                <p>Запрещено обманывать игроков при торговле (не передавать товар после получения оплаты или наоборот).</p>
+                            </div>
+                            <div class="rule-item">
+                                <h4><i class="fas fa-file-signature"></i> 6.2. Договоренности</h4>
+                                <p>Все устные договоренности считаются обязательными к исполнению. В случае спора администрация может запросить скриншоты/видео.</p>
+                            </div>
+                        </div>
+
+                        <!-- Раздел 7 -->
+                        <div class="rule-section">
+                            <div class="section-header">
+                                <i class="fas fa-ban"></i>
+                                <h2>▰▰▰▰▰▰▰▰ 7. НАКАЗАНИЯ ▰▰▰▰▰▰▰▰</h2>
+                            </div>
+                            <div class="rule-item">
+                                <p>Нарушение правил карается от предупреждения (мут/варн) до временной или постоянной блокировки аккаунта в зависимости от тяжести нарушения.</p>
+                                <p style="font-style: italic; margin-top: 15px;"><i class="fas fa-quote-right"></i> Администратор всегда прав. Если администратор не прав — смотри пункт 5.1.</p>
+                            </div>
+                        </div>
+
+                        <!-- Обновления и финальное приветствие -->
+                        <div class="fine-print">
+                            <p><i class="fas fa-sync"></i> ✦ ОБНОВЛЕНИЯ ПРАВИЛ</p>
+                            <p>Правила сервера могут быть изменены или дополнены в любое время.<br>Следите за нашими соц-сетями.</p>
+                            <hr style="border-color: var(--accent); margin: 20px 0; opacity: 0.3;">
+                            <p style="font-size: 1.3rem;">✨ ДОБРО ПОЖАЛОВАТЬ НА LEGENDSRP! ✨</p>
+                            <p><strong>Приятной игры!</strong> ✨</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ИВЕНТЫ (ПОЛНОСТЬЮ ОБНОВЛЕНЫ) -->
+                <div class="page" id="page-events">
+                    <h1>Ивенты LegendsRP</h1>
+                    <div class="events-grid">
+                        
+                        <!-- 1. МАФИЯ -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-mask"></i><h2>1. МАФИЯ</h2></div>
+                            <div class="event-description">Психологическая игра в чате. Город засыпает... просыпается мафия. Мирные жители пытаются вычислить преступников, а мафия — уничтожить всех мирных.</div>
+                            <div class="event-section"><h3><i class="fas fa-users"></i> РОЛИ ИГРОКОВ</h3>
+                                <div class="role-item"><strong>Ведущий (Администратор)</strong> Не играет, но управляет процессом: объявляет смену дня и ночи, принимает действия игроков в личные сообщения, объявляет результаты.</div>
+                                <div class="role-item"><strong>Мафия (2-3 человека)</strong> <br>Цель: Убить всех мирных жителей или сравнять их количество с числом мафии.<br>Действие ночью: Мафия просыпается (открывает глаза/получает ЛС) и выбирает одну жертву. Если мафии несколько, они должны договориться.</div>
+                                <div class="role-item"><strong>Шериф (1 человек)</strong> <br>Цель: Помочь мирным, вычисляя мафию.<br>Действие ночью: Шериф проверяет одного игрока. Ведущий сообщает ему, является ли тот мафией или нет (обычно жестами или в ЛС).</div>
+                                <div class="role-item"><strong>Доктор (1 человек)</strong> <br>Цель: Спасать людей от убийства.<br>Действие ночью: Доктор выбирает одного игрока для лечения. Если этого игрока выбрала мафия, он выживает.<br>Важно: Доктор <strong>не может</strong> лечить одного и того же человека два раза подряд. Часто доктор не может лечить себя (зависит от версии игры).</div>
+                                <div class="role-item"><strong>Мирные жители (остальные игроки)</strong> <br>Цель: Вычислить и проголосовать за мафию днем.<br>Действие: Только днем: обсуждают, анализируют, кричат "Я мирный!" и голосуют.</div>
+                            </div>
+                            <div class="event-section"><h3><i class="fas fa-scale-balanced"></i> ПРАВИЛА ИГРЫ</h3>
+                                <ul><li><strong>День:</strong> Все игроки видят друг друга. Идет обсуждение. В конце дня голосование. Тот, кто набрал больше всего голосов, отправляется в тюрьму (умирает) и раскрывает свою роль.</li>
+                                <li><strong>Ночь:</strong> Все "засыпают". В чате писать нельзя (кроме ЛС ведущему). Ведущий по очереди будит мафию, шерифа, доктора. Мафия выбирает жертву. Шериф выбирает, кого проверить. Доктор выбирает, кого лечить.</li>
+                                <li><strong>Победа:</strong> Мафия выигрывает, когда ее количество становится равным количеству мирных (или больше). Мирные выигрывают, когда посажены все мафиози.</li></ul>
+                            </div>
+                        </div>
+
+                        <!-- 2. БУНКЕР -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-bunker"></i><h2>2. БУНКЕР</h2></div>
+                            <div class="event-description">Ядерная война (или зомби-апокалипсис) наступила. Мест в бункере меньше, чем игроков. Докажите, что вы нужнее для выживания человечества.</div>
+                            <div class="event-section"><h3><i class="fas fa-id-card"></i> РОЛИ</h3><p>Ролей как таковых нет. Каждый игрок получает <strong>персональную карточку выжившего</strong> с набором параметров:</p>
+                            <ul><li>Профессия: (Врач, Сварщик, Военный, Учитель, Безработный)</li><li>Здоровье: (Крепкое, Болеет астмой, Ранен)</li><li>Запас еды: (Мешок картошки, 3 банки тушенки, Ничего)</li><li>Навык/Инвентарь: (Умеет разводить огонь, Есть топор, Играет на гитаре)</li><li>Фобия: (Боится замкнутых пространств, Паникует в стрессе)</li><li>Пол: (М/Ж) - иногда важно для "восстановления популяции"</li></ul></div>
+                            <div class="event-section"><h3><i class="fas fa-gamepad"></i> ПРОЦЕСС ИГРЫ</h3>
+                            <ol><li><strong>Получение карт:</strong> Ведущий раздает карточки в личные сообщения. Игроки смотрят свои параметры, но не показывают их другим.</li>
+                            <li><strong>Круглый стол:</strong> Начинается обсуждение. Каждый игрок должен представиться и рассказать о себе. (Можно врать!)</li>
+                            <li><strong>Голосование:</strong> После того как все высказались, начинается голосование за того, кто НЕ ДОЛЖЕН попасть в бункер.</li>
+                            <li><strong>Исключение:</strong> Игрок с наибольшим количеством голосов покидает игру.</li>
+                            <li><strong>Финал:</strong> Когда в бункере остается столько людей, сколько мест, игра заканчивается. Оставшиеся объявляют свои настоящие карточки.</li></ol></div>
+                        </div>
+
+                        <!-- 3. ГОЛОДНЫЕ ИГРЫ -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-crosshairs"></i><h2>3. ГОЛОДНЫЕ ИГРЫ</h2></div>
+                            <div class="event-description">Классическая битва насмерть. Каждый сам за себя. В центре карты — сундуки с лутом. На старт, внимание, марш!</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ol><li>Все игроки собираются на специальной арене (круг вокруг "Рога Изобилия").</li>
+                            <li>У игроков пустой инвентарь. Админ дает отсчет.</li>
+                            <li>Первым делом все бегут к центру к сундукам. В сундуках: оружие, броня, еда, зелья.</li>
+                            <li>PvP разрешено с первой секунды.</li>
+                            <li>Опционально: "Барьер" — каждые 5 минут зона игры уменьшается.</li>
+                            <li>Побеждает последний оставшийся в живых.</li></ol></div>
+                        </div>
+
+                        <!-- 5. СТРОИТЕЛЬНЫЙ БАТТЛ (Speed Build) -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-cubes"></i><h2>5. СТРОИТЕЛЬНЫЙ БАТТЛ</h2></div>
+                            <div class="event-description">Кто быстрее и креативнее построит задание?</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ol><li>Администратор объявляет тему.</li><li>Игрокам выдается одинаковый набор блоков.</li><li>На постройку дается ровно 15 минут.</li><li>Запрещено использовать готовые схемы из интернета.</li><li>По окончании времени — просмотр и голосование.</li></ol></div>
+                        </div>
+
+                        <!-- 7. ЛАБИРИНТ -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-draw-polygon"></i><h2>7. ЛАБИРИНТ</h2></div>
+                            <div class="event-description">Тест на память и ориентацию в пространстве. Сможете ли вы выбраться из самой запутанной ловушки?</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ul><li>Вход через портал/дверь. Точка входа одна.</li><li>Бежать можно, летать (элитры) - запрещено. Жемчуг края сквозь стены - запрещено.</li><li>Ломать стены лабиринта ЗАПРЕЩЕНО.</li><li>Ловушки: ямы с лавой, раздатчики со стрелами, скрытые поршни.</li><li>Победа: найти сундук в центре и нажать кнопку / первым коснуться финишного блока.</li></ul></div>
+                        </div>
+
+                        <!-- 8. БЕГИ ИЛИ УМРИ -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-running"></i><h2>8. БЕГИ ИЛИ УМРИ</h2></div>
+                            <div class="event-description">Только вперед и вверх. Одно неверное движение — и ты в начале.</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ul><li>Старт на линии.</li><li>Преодолеть полосу препятствий прыжками и бегом. Разрушать/добавлять блоки нельзя.</li><li>Падение = телепорт на последний чекпоинт или на старт.</li><li>Чекпоинты фиксируют прогресс.</li><li>Побеждает коснувшийся финального блока первым.</li></ul></div>
+                        </div>
+
+                        <!-- 9. КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ? -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-question-circle"></i><h2>9. КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ?</h2></div>
+                            <div class="event-description">Интеллектуальная викторина. Отвечай на вопросы и зарабатывай внутриигровую валюту.</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ul><li>Игрок против ведущего или все сразу.</li><li>Ведущий дает вопрос и 4 варианта ответа.</li><li>Ответы пишут в чат/ЛС.</li><li>Подсказки (если 1 игрок): 50/50, звонок другу, помощь зала.</li><li>За правильные ответы — очки/деньги. Цепочка из 5 правильных ответов удваивает приз.</li></ul></div>
+                        </div>
+
+                        <!-- 10. СПАГЕТТИ-ВЕСТЕРН -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-bow-arrow"></i><h2>10. СПАГЕТТИ-ВЕСТЕРН</h2></div>
+                            <div class="event-description">Двое на мосту над лавой. У каждого лук и 5 стрел. Кто кого перехитрит?</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ul><li>Два игрока, лук и 5 стрел, без брони.</li><li>Арена — узкий мост над лавой/пустотой.</li><li>Сходить с моста = смерть. Атака только из лука.</li><li>Победа: убить противника, заставить упасть, ничья если стрелы кончились.</li></ul></div>
+                        </div>
+
+                        <!-- 11. МОБ-АРЕНА -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-dragon"></i><h2>11. МОБ-АРЕНА (Волны)</h2></div>
+                            <div class="event-description">Испытание на выживание против полчищ враждебных мобов. Сколько волн ты продержишься?</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ul><li>Одиночно или группой.</li><li>Стартовый набор: деревянное/каменное оружие + хлеб.</li><li>Админ спаунит мобов волнами (сложность растет).</li><li>После каждой 3-й волны — 30 сек передышки.</li><li>Смерть = выход из игры.</li><li>Победа: последний выживший или прохождение всех волн.</li></ul></div>
+                        </div>
+
+                        <!-- 12. ЛОТЕРЕЯ / АУКЦИОН -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-ticket-alt"></i><h2>12. ЛОТЕРЕЯ / АУКЦИОН</h2></div>
+                            <div class="event-section"><h3><i class="fas fa-dice"></i> ЛОТЕРЕЯ</h3><ul><li>Покупка билетов (например, 10 алмазов).</li><li>Розыгрыш через /roll или генератор.</li><li>Победитель забирает супер-приз.</li></ul></div>
+                            <div class="event-section"><h3><i class="fas fa-gavel"></i> АУКЦИОН</h3><ul><li>Админ выставляет редкий лот, объявляет стартовую цену.</li><li>Игроки повышают ставки в чате.</li><li>После "Раз... Два... Три..." победитель платит и забирает лот.</li><li>Если денег нет — дисквалификация.</li></ul></div>
+                        </div>
+
+                        <!-- 13. ШАХТЕРСКИЕ ГОНКИ -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-pickaxe"></i><h2>13. ШАХТЕРСКИЕ ГОНКИ</h2></div>
+                            <div class="event-description">Кто самый трудолюбивый шахтер? За 30 минут нужно добыть как можно больше ценных ресурсов.</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ul><li>Всем идентичный набор: железная кирка, еда, факелы.</li><li>Все в шахте на одних координатах.</li><li>Таймер 30 минут. Не воровать, не убивать, не использовать свои инструменты.</li><li>По сигналу — подъем, сдача ресурсов админу.</li><li>Победитель забирает добытое или получает приз.</li></ul></div>
+                        </div>
+
+                        <!-- 14. ЗАХВАТ ФЛАГА -->
+                        <div class="event-card">
+                            <div class="event-header"><i class="fas fa-flag"></i><h2>14. ЗАХВАТ ФЛАГА</h2></div>
+                            <div class="event-description">Командная игра. Укради флаг врага и принеси на свою базу, защищая свой.</div>
+                            <div class="event-section"><h3><i class="fas fa-list"></i> ПРАВИЛА</h3>
+                            <ul><li>Две команды (красные/синие) с цветной броней.</li><li>На базах — флаг (блок шерсти в рамке).</li><li>Цель: взять вражеский флаг и вернуться с ним на свою базу.</li><li>Если носитель флага убит, флаг падает. Его нельзя подобрать 30 сек, либо возвращается на базу при касании владельцем.</li><li>Жемчуг Края часто запрещен.</li><li>Победа — команда, первой набравшая, например, 3 захвата.</li></ul></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Страница Топы (скрыта, но оставлена для возможного будущего использования) -->
+                <div class="page" id="page-tops" style="display: none;"></div>
+            </div>
+
+            <!-- Правая панель меню -->
+            <div class="menu-panel" id="menuPanel">
+                <div class="menu-item active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></div>
+                <div class="menu-item" data-page="rules"><i class="fas fa-book"></i><span>Правила</span></div>
+                <div class="menu-item" data-page="events"><i class="fas fa-calendar-check"></i><span>Ивенты</span></div>
+                <!-- Пункт Топы теперь неактивен и содержит надпись "временно не доступен" -->
+                <div class="menu-item disabled" data-page="tops"><i class="fas fa-trophy"></i><span>Топы</span><span class="disabled-badge">временно не доступен</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const menuItems = document.querySelectorAll('.menu-item:not(.disabled)'); // только активные пункты
+            const pages = document.querySelectorAll('.page');
+            
+            function setActivePage(pageId) {
+                pages.forEach(p => p.classList.remove('active'));
+                const activePage = document.getElementById(`page-${pageId}`);
+                if (activePage) activePage.classList.add('active');
+                
+                // Обновляем активный класс у пунктов меню (только у активных)
+                document.querySelectorAll('.menu-item').forEach(item => {
+                    if (!item.classList.contains('disabled') && item.dataset.page === pageId) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            }
+
+            menuItems.forEach(item => {
+                item.addEventListener('click', () => setActivePage(item.dataset.page));
+            });
+
+            // Theme toggle (без изменений)
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const themeIcon = themeToggle.querySelector('i');
+            const themeText = themeToggle.querySelector('span');
+            const savedTheme = localStorage.getItem('legendsRP_theme');
+            if (savedTheme) {
+                body.className = savedTheme;
+                updateThemeToggle(savedTheme === 'theme-dark');
+            }
+            function updateThemeToggle(isDark) {
+                themeIcon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+                themeText.textContent = isDark ? 'Тёмная тема' : 'Светлая тема';
+            }
+            themeToggle.addEventListener('click', () => {
+                const isDark = body.classList.contains('theme-dark');
+                body.classList.toggle('theme-light', isDark);
+                body.classList.toggle('theme-dark', !isDark);
+                updateThemeToggle(!isDark);
+                localStorage.setItem('legendsRP_theme', isDark ? 'theme-light' : 'theme-dark');
+            });
+
+            // Убедимся, что страница топов не открывается (если вдруг кто-то введёт хеш)
+            if (window.location.hash === '#page-tops') {
+                setActivePage('home');
+            }
+        })();
+    </script>
+</body>
+</html>
