@@ -373,7 +373,7 @@
         .tops-table td { padding: 12px 10px; border-bottom: 1px solid var(--glass-border); }
         .tops-table .rank { font-weight: bold; color: var(--accent); font-size: 1.2rem; }
 
-        /* СТИЛИ ДЛЯ СОЦСЕТЕЙ (НОВАЯ СТРАНИЦА) */
+        /* СТИЛИ ДЛЯ СОЦСЕТЕЙ */
         .social-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -421,9 +421,184 @@
             opacity: 0.8;
         }
         .social-card.discord i { color: #5865F2; }
-        .social-card.youtube i { color: #FF0000; }
         .social-card.telegram i { color: #26A5E4; }
-        .social-card.vk i { color: #0077FF; }
+
+        /* СТИЛИ ДЛЯ МАГАЗИНА */
+        .shop-currency {
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+        .currency-cards {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        .currency-card {
+            background: linear-gradient(135deg, #f9d976 0%, #f39c12 100%);
+            color: #2c2c2c;
+            border-radius: 25px;
+            padding: 25px 35px;
+            text-align: center;
+            flex: 1 1 200px;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+        }
+        .currency-card i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c2c2c;
+        }
+        .currency-card span {
+            font-size: 1.3rem;
+            display: block;
+        }
+
+        .donation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .donation-card {
+            border-radius: 30px;
+            padding: 25px 15px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+        }
+        .donation-card:hover {
+            transform: translateY(-5px);
+        }
+        .donation-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+        }
+        .donation-card .price {
+            font-size: 1.6rem;
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .donation-card .badge {
+            background: gold;
+            color: #2c2c2c;
+            padding: 5px 15px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* Цвета для плашек донатов (от худшего к лучшему) */
+        .donation-card.shelly { background: linear-gradient(145deg, #8d6e63, #6d4c41); }
+        .donation-card.bull { background: linear-gradient(145deg, #b71c1c, #8b0000); }
+        .donation-card.rico { background: linear-gradient(145deg, #1976d2, #0d47a1); }
+        .donation-card.gale { background: linear-gradient(145deg, #00897b, #00695c); }
+        .donation-card.piper { background: linear-gradient(145deg, #fbc02d, #f57f17); }
+        .donation-card.mortis { background: linear-gradient(145deg, #7b1fa2, #4a0072); }
+        .donation-card.jinn { background: linear-gradient(145deg, #e64a19, #bf360c); }
+        .donation-card.crow { background: linear-gradient(145deg, #2c3e50, #1a252f); }
+        .donation-card.spike { background: linear-gradient(145deg, #2e7d32, #1b5e20); }
+        .donation-card.volt { background: linear-gradient(145deg, #1565c0, #0d2c54); }
+        .donation-card.kaze { background: linear-gradient(145deg, #4fc3f7, #0288d1); }
+        .donation-card.sirius { 
+            background: linear-gradient(145deg, #ffb74d, #ff9800, #f57c00);
+            border: 2px solid gold;
+        }
+
+        /* Модальное окно для магазина */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--accent);
+            border-radius: 40px;
+            padding: 40px 60px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            animation: modalPop 0.3s ease;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content i {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .modal-content h3 {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+        }
+
+        .modal-content .tg-bot {
+            background: var(--accent);
+            color: #1e1b16;
+            padding: 15px 30px;
+            border-radius: 60px;
+            font-weight: bold;
+            font-size: 1.5rem;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 2px solid var(--glass-border);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            padding: 10px 40px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            color: #1e1b16;
+        }
 
         /* Меню справа */
         .menu-panel {
@@ -461,7 +636,7 @@
         .menu-item.active { background: var(--accent); color: #1e1b16; border: 1px solid var(--glass-border); }
         .menu-item.active i { color: #1e1b16; }
 
-        /* Специальный стиль для неактивного пункта "Топы" */
+        /* Специальный стиль для неактивных пунктов */
         .menu-item.disabled {
             opacity: 0.7;
             cursor: not-allowed;
@@ -506,6 +681,17 @@
 </head>
 <body class="theme-light">
     <div class="app">
+        <!-- Модальное окно для магазина -->
+        <div class="modal-overlay" id="shopModal">
+            <div class="modal-content">
+                <i class="fab fa-telegram"></i>
+                <h3>Приобретение</h3>
+                <p>Для покупки напишите в Telegram бота:</p>
+                <div class="tg-bot">@LegendsRp_bot</div>
+                <button class="modal-close" id="closeModalBtn">Закрыть</button>
+            </div>
+        </div>
+
         <div class="header">
             <div class="theme-toggle" id="themeToggle">
                 <i class="fas fa-sun"></i>
@@ -831,7 +1017,7 @@
                     </div>
                 </div>
 
-                <!-- НОВАЯ СТРАНИЦА: СОЦСЕТИ -->
+                <!-- СТРАНИЦА: СОЦСЕТИ (только Discord и Telegram) -->
                 <div class="page" id="page-social">
                     <h1>Мы в соцсетях</h1>
                     <p>Присоединяйся к нашему сообществу, следи за новостями и общайся с другими игроками!</p>
@@ -849,17 +1035,57 @@
                     </div>
                 </div>
 
+                <!-- СТРАНИЦА: МАГАЗИН -->
+                <div class="page" id="page-shop">
+                    <h1>Магазин LegendsRP</h1>
+                    
+                    <!-- Блок с валютой -->
+                    <div class="shop-currency">
+                        <h2><i class="fas fa-coins"></i> Донат-валюта</h2>
+                        <div class="currency-cards">
+                            <div class="currency-card">
+                                <i class="fas fa-coins"></i>
+                                <span>10 Голд Койнов</span>
+                                <span style="font-size: 1.5rem; margin-top: 10px;">10 ₽</span>
+                            </div>
+                        </div>
+                        <p style="margin-top: 15px;">1 Голд Койн = 1 рубль. Валюта для покупок внутри сервера.</p>
+                    </div>
+
+                    <!-- Блок с донатами -->
+                    <h2><i class="fas fa-crown"></i> Донат-привилегии</h2>
+                    <div class="donation-grid">
+                        <div class="donation-card shelly"><h3>Шелли</h3><div class="price">На следующий: 19 ₽</div></div>
+                        <div class="donation-card bull"><h3>Булл</h3><div class="price">На следующий: 39 ₽</div></div>
+                        <div class="donation-card rico"><h3>Рико</h3><div class="price">На следующий: 59 ₽</div></div>
+                        <div class="donation-card gale"><h3>Гэйл</h3><div class="price">На следующий: 89 ₽</div></div>
+                        <div class="donation-card piper"><h3>Пайпер</h3><div class="price">На следующий: 98 ₽</div></div>
+                        <div class="donation-card mortis"><h3>Мортис</h3><div class="price">На следующий: 198 ₽</div></div>
+                        <div class="donation-card jinn"><h3>Джин</h3><div class="price">На следующий: 297 ₽</div></div>
+                        <div class="donation-card crow"><h3>Ворон</h3><div class="price">На следующий: 397 ₽</div></div>
+                        <div class="donation-card spike"><h3>Спайк</h3><div class="price">На следующий: 495 ₽</div></div>
+                        <div class="donation-card volt"><h3>Вольт</h3><div class="price">На следующий: 995 ₽</div></div>
+                        <div class="donation-card kaze"><h3>Кадзэ</h3><div class="price">На следующий: 2500 ₽</div></div>
+                        <div class="donation-card sirius"><h3>Сириус</h3><div class="badge">+ОП</div><div class="price">(Модератор)</div></div>
+                    </div>
+                </div>
+
+                <!-- НОВАЯ СТРАНИЦА: ПРОФЕССИИ (временно не доступно) -->
+                <div class="page" id="page-professions" style="display: none;"></div>
+
                 <!-- Страница Топы (скрыта) -->
                 <div class="page" id="page-tops" style="display: none;"></div>
             </div>
 
-            <!-- Правая панель меню (ДОБАВЛЕН ПУНКТ "СОЦСЕТИ") -->
+            <!-- Правая панель меню -->
             <div class="menu-panel" id="menuPanel">
                 <div class="menu-item active" data-page="home"><i class="fas fa-home"></i><span>Главная</span></div>
                 <div class="menu-item" data-page="rules"><i class="fas fa-book"></i><span>Правила</span></div>
                 <div class="menu-item" data-page="events"><i class="fas fa-calendar-check"></i><span>Ивенты</span></div>
                 <div class="menu-item" data-page="social"><i class="fas fa-share-alt"></i><span>Соцсети</span></div>
-                <div class="menu-item disabled" data-page="tops"><i class="fas fa-trophy"></i><span>Топы</span><span class="disabled-badge">временно не доступен</span></div>
+                <div class="menu-item" data-page="shop"><i class="fas fa-store"></i><span>Магазин</span></div>
+                <div class="menu-item disabled" data-page="professions"><i class="fas fa-hammer"></i><span>Профессии</span><span class="disabled-badge">временно не доступно</span></div>
+                <div class="menu-item disabled" data-page="tops"><i class="fas fa-trophy"></i><span>Топы</span><span class="disabled-badge">временно не доступно</span></div>
             </div>
         </div>
     </div>
@@ -910,8 +1136,31 @@
                 localStorage.setItem('legendsRP_theme', isDark ? 'theme-light' : 'theme-dark');
             });
 
-            // Убедимся, что страница топов не открывается
-            if (window.location.hash === '#page-tops') {
+            // Модальное окно для магазина
+            const modal = document.getElementById('shopModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+
+            // Открыть модалку при клике на валюту или донат
+            document.querySelectorAll('.currency-card, .donation-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    modal.style.display = 'flex';
+                });
+            });
+
+            // Закрыть по кнопке
+            closeModalBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+
+            // Закрыть по клику вне модалки
+            window.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Убедимся, что скрытые страницы не открываются
+            if (window.location.hash === '#page-tops' || window.location.hash === '#page-professions') {
                 setActivePage('home');
             }
         })();
