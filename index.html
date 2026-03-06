@@ -505,7 +505,7 @@
             display: inline-block;
         }
 
-        /* Цвета для плашек донатов (от худшего к лучшему) */
+        /* Цвета для плашек донатов */
         .donation-card.shelly { background: linear-gradient(145deg, #8d6e63, #6d4c41); }
         .donation-card.bull { background: linear-gradient(145deg, #b71c1c, #8b0000); }
         .donation-card.rico { background: linear-gradient(145deg, #1976d2, #0d47a1); }
@@ -598,6 +598,84 @@
         .modal-close:hover {
             background: var(--accent);
             color: #1e1b16;
+        }
+
+        /* СТИЛИ ДЛЯ РАСПИСАНИЯ (новая страница) */
+        .schedule-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 35px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: var(--shadow);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .schedule-item {
+            background: var(--glass-bg);
+            border-radius: 30px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            transition: transform 0.2s;
+        }
+        .schedule-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+        .schedule-item i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        .schedule-item .day {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        .schedule-item .time {
+            font-size: 1.4rem;
+            background: var(--card-bg);
+            padding: 10px;
+            border-radius: 40px;
+            border: 1px dashed var(--accent);
+        }
+        .schedule-note {
+            background: var(--warning-bg);
+            border-radius: 30px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2rem;
+            border-left: 6px solid var(--accent);
+        }
+        .bot-button {
+            display: inline-block;
+            background: var(--accent);
+            color: #1e1b16;
+            padding: 18px 40px;
+            border-radius: 60px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 20px 0;
+            border: 2px solid var(--glass-border);
+            transition: transform 0.2s;
+        }
+        .bot-button:hover {
+            transform: scale(1.05);
+            background: var(--accent-hover);
+        }
+        .bot-button i {
+            margin-right: 10px;
         }
 
         /* Меню справа */
@@ -1070,6 +1148,38 @@
                     </div>
                 </div>
 
+                <!-- НОВАЯ СТРАНИЦА: РАСПИСАНИЕ -->
+                <div class="page" id="page-schedule">
+                    <h1>Расписание работы Telegram-бота</h1>
+                    <div class="schedule-card">
+                        <div class="schedule-grid">
+                            <div class="schedule-item">
+                                <i class="fas fa-calendar-day"></i>
+                                <div class="day">Пн–Пт</div>
+                                <div class="time">13:00 – 22:00 МСК</div>
+                            </div>
+                            <div class="schedule-item">
+                                <i class="fas fa-calendar-day"></i>
+                                <div class="day">Суббота</div>
+                                <div class="time">12:00 – 22:00 МСК</div>
+                            </div>
+                            <div class="schedule-item">
+                                <i class="fas fa-calendar-day"></i>
+                                <div class="day">Воскресенье</div>
+                                <div class="time">11:00 – 22:00 МСК</div>
+                            </div>
+                        </div>
+                        <div class="schedule-note">
+                            <i class="fas fa-info-circle"></i> Бот может работать и вне расписания, но в указанные часы — гарантированно!
+                        </div>
+                        <div style="text-align: center;">
+                            <a href="https://t.me/LegendsRp_bot" target="_blank" class="bot-button">
+                                <i class="fab fa-telegram"></i> @LegendsRp_bot
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- НОВАЯ СТРАНИЦА: ПРОФЕССИИ (временно не доступно) -->
                 <div class="page" id="page-professions" style="display: none;"></div>
 
@@ -1084,6 +1194,8 @@
                 <div class="menu-item" data-page="events"><i class="fas fa-calendar-check"></i><span>Ивенты</span></div>
                 <div class="menu-item" data-page="social"><i class="fas fa-share-alt"></i><span>Соцсети</span></div>
                 <div class="menu-item" data-page="shop"><i class="fas fa-store"></i><span>Магазин</span></div>
+                <!-- НОВЫЙ ПУНКТ: РАСПИСАНИЕ -->
+                <div class="menu-item" data-page="schedule"><i class="fas fa-clock"></i><span>Расписание</span></div>
                 <div class="menu-item disabled" data-page="professions"><i class="fas fa-hammer"></i><span>Профессии</span><span class="disabled-badge">временно не доступно</span></div>
                 <div class="menu-item disabled" data-page="tops"><i class="fas fa-trophy"></i><span>Топы</span><span class="disabled-badge">временно не доступно</span></div>
             </div>
@@ -1167,4 +1279,3 @@
     </script>
 </body>
 </html>
-
