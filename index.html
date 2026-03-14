@@ -522,6 +522,144 @@
             border: 2px solid gold;
         }
 
+        /* НОВЫЙ РАЗДЕЛ: ПОДПИСКИ */
+        .subscription-section {
+            margin-top: 50px;
+            margin-bottom: 30px;
+        }
+        .subscription-card {
+            background: linear-gradient(145deg, #bf9530, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            background-size: 300% 300%;
+            animation: goldGradient 8s ease infinite;
+            border-radius: 40px;
+            padding: 30px;
+            color: #2c2c2c;
+            box-shadow: var(--shadow);
+            border: 2px solid gold;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 20px 0;
+        }
+        .subscription-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+        @keyframes goldGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .subscription-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #2c2c2c;
+            text-shadow: 0 2px 5px rgba(255,215,0,0.5);
+        }
+        .subscription-card .features {
+            list-style: none;
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+        .subscription-card .features li {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .subscription-card .features i {
+            color: #2c2c2c;
+            font-size: 1.4rem;
+        }
+        .subscription-card .price-tag {
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            padding: 15px 30px;
+            border-radius: 60px;
+            display: inline-block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 1px solid gold;
+        }
+
+        /* Модальное окно для тарифов подписки */
+        .tariff-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .tariff-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid gold;
+            border-radius: 50px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: var(--shadow);
+        }
+        .tariff-content h2 {
+            color: gold;
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+        }
+        .tariff-grid {
+            display: grid;
+            gap: 15px;
+        }
+        .tariff-item {
+            background: var(--card-bg);
+            border: 1px solid gold;
+            border-radius: 40px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .tariff-item:hover {
+            transform: scale(1.02);
+            background: var(--accent);
+            color: #1e1b16;
+        }
+        .tariff-item .period {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        .tariff-item .price {
+            font-size: 1.6rem;
+            background: rgba(0,0,0,0.2);
+            padding: 5px 20px;
+            border-radius: 40px;
+        }
+        .tariff-item .month-price {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .close-tariff {
+            background: transparent;
+            border: 2px solid gold;
+            color: gold;
+            padding: 12px 40px;
+            border-radius: 40px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 25px;
+            width: 100%;
+        }
+        .close-tariff:hover {
+            background: gold;
+            color: #1e1b16;
+        }
+
         /* Модальное окно для магазина */
         .modal-overlay {
             display: none;
@@ -600,7 +738,7 @@
             color: #1e1b16;
         }
 
-        /* СТИЛИ ДЛЯ РАСПИСАНИЯ (новая страница) */
+        /* СТИЛИ ДЛЯ РАСПИСАНИЯ */
         .schedule-card {
             background: var(--card-bg);
             backdrop-filter: blur(5px);
@@ -770,6 +908,32 @@
             </div>
         </div>
 
+        <!-- Модальное окно для тарифов подписки -->
+        <div class="tariff-modal" id="tariffModal">
+            <div class="tariff-content">
+                <h2><i class="fas fa-crown" style="color: gold;"></i> LEGEND Подписка</h2>
+                <div class="tariff-grid">
+                    <div class="tariff-item tariff-option">
+                        <span class="period">1 месяц</span>
+                        <span class="price">350 ₽</span>
+                    </div>
+                    <div class="tariff-item tariff-option">
+                        <span class="period">2 месяца</span>
+                        <span class="price">650 ₽ <span class="month-price">(325 ₽/мес)</span></span>
+                    </div>
+                    <div class="tariff-item tariff-option">
+                        <span class="period">3 месяца</span>
+                        <span class="price">795 ₽ <span class="month-price">(265 ₽/мес)</span></span>
+                    </div>
+                    <div class="tariff-item tariff-option">
+                        <span class="period">5 месяцев</span>
+                        <span class="price">1 100 ₽ <span class="month-price">(220 ₽/мес)</span></span>
+                    </div>
+                </div>
+                <button class="close-tariff" id="closeTariffBtn">Закрыть</button>
+            </div>
+        </div>
+
         <div class="header">
             <div class="theme-toggle" id="themeToggle">
                 <i class="fas fa-sun"></i>
@@ -783,7 +947,7 @@
                 <!-- Главная -->
                 <div class="page active" id="page-home">
                     <h1>Добро пожаловать в LegendsRP!</h1>
-                    <p>LegendsRP — полу-ванильный RP режим на сервере BRAWL LEGENDS, где классическое выживание сочетается с ролевой игрой. Создавай свою историю, строй города, объединяйся с другими игроками и стань настоящей легендой мира.</p>
+                    <p>**LegendsRP** — полу-ванильный RP режим на сервере **BrawlLegends**, где классическое выживание сочетается с ролевой игрой. Создавай свою историю, строй города, объединяйся с другими игроками и стань настоящей легендой мира.</p>
                     <img src="https://i.imgur.com/Z7TGgWd.png" alt="Minecraft RPG" style="max-height: 300px; width: 100%; object-fit: cover;">
                     <h2>Что вас ждёт?</h2>
                     <p>• Ивенты каждый день<br>• Открытый мир<br>• Дружное комьюнити и экономика<br>• Система территорий</p>
@@ -1113,7 +1277,7 @@
                     </div>
                 </div>
 
-                <!-- СТРАНИЦА: МАГАЗИН -->
+                <!-- СТРАНИЦА: МАГАЗИН (с новым разделом ПОДПИСКИ) -->
                 <div class="page" id="page-shop">
                     <h1>Магазин LegendsRP</h1>
                     
@@ -1146,9 +1310,26 @@
                         <div class="donation-card kaze"><h3>Кадзэ</h3><div class="price">На следующий: 2500 ₽</div></div>
                         <div class="donation-card sirius"><h3>Сириус</h3><div class="badge">+ОП</div><div class="price">(Модератор)</div></div>
                     </div>
+
+                    <!-- НОВЫЙ РАЗДЕЛ: ПОДПИСКИ -->
+                    <div class="subscription-section">
+                        <h2><i class="fas fa-star" style="color: gold;"></i> ПОДПИСКИ</h2>
+                        <div class="subscription-card" id="legendSubscription">
+                            <h3><i class="fas fa-crown"></i> LEGEND</h3>
+                            <ul class="features">
+                                <li><i class="fas fa-check-circle"></i> Безлимитный /fly</li>
+                                <li><i class="fas fa-check-circle"></i> Бесплатное участие во всех ивентах</li>
+                                <li><i class="fas fa-check-circle"></i> Особая приписка возле ника</li>
+                                <li><i class="fas fa-check-circle"></i> Отображение выше всех в TAB</li>
+                            </ul>
+                            <div class="price-tag">
+                                <i class="fas fa-tag"></i> от 220 ₽/месяц
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- НОВАЯ СТРАНИЦА: РАСПИСАНИЕ -->
+                <!-- СТРАНИЦА: РАСПИСАНИЕ -->
                 <div class="page" id="page-schedule">
                     <h1>Расписание работы Telegram-бота</h1>
                     <div class="schedule-card">
@@ -1194,7 +1375,6 @@
                 <div class="menu-item" data-page="events"><i class="fas fa-calendar-check"></i><span>Ивенты</span></div>
                 <div class="menu-item" data-page="social"><i class="fas fa-share-alt"></i><span>Соцсети</span></div>
                 <div class="menu-item" data-page="shop"><i class="fas fa-store"></i><span>Магазин</span></div>
-                <!-- НОВЫЙ ПУНКТ: РАСПИСАНИЕ -->
                 <div class="menu-item" data-page="schedule"><i class="fas fa-clock"></i><span>Расписание</span></div>
                 <div class="menu-item disabled" data-page="professions"><i class="fas fa-hammer"></i><span>Профессии</span><span class="disabled-badge">временно не доступно</span></div>
                 <div class="menu-item disabled" data-page="tops"><i class="fas fa-trophy"></i><span>Топы</span><span class="disabled-badge">временно не доступно</span></div>
@@ -1204,7 +1384,7 @@
 
     <script>
         (function() {
-            const menuItems = document.querySelectorAll('.menu-item:not(.disabled)'); // только активные пункты
+            const menuItems = document.querySelectorAll('.menu-item:not(.disabled)');
             const pages = document.querySelectorAll('.page');
             
             function setActivePage(pageId) {
@@ -1212,7 +1392,6 @@
                 const activePage = document.getElementById(`page-${pageId}`);
                 if (activePage) activePage.classList.add('active');
                 
-                // Обновляем активный класс у пунктов меню (только у активных)
                 document.querySelectorAll('.menu-item').forEach(item => {
                     if (!item.classList.contains('disabled') && item.dataset.page === pageId) {
                         item.classList.add('active');
@@ -1226,7 +1405,7 @@
                 item.addEventListener('click', () => setActivePage(item.dataset.page));
             });
 
-            // Theme toggle (без изменений)
+            // Theme toggle
             const themeToggle = document.getElementById('themeToggle');
             const body = document.body;
             const themeIcon = themeToggle.querySelector('i');
@@ -1268,6 +1447,38 @@
             window.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.style.display = 'none';
+                }
+            });
+
+            // Модальное окно для тарифов подписки
+            const tariffModal = document.getElementById('tariffModal');
+            const closeTariffBtn = document.getElementById('closeTariffBtn');
+            const legendCard = document.getElementById('legendSubscription');
+
+            // Открыть окно с тарифами при клике на подписку
+            if (legendCard) {
+                legendCard.addEventListener('click', () => {
+                    tariffModal.style.display = 'flex';
+                });
+            }
+
+            // Закрыть окно тарифов
+            closeTariffBtn.addEventListener('click', () => {
+                tariffModal.style.display = 'none';
+            });
+
+            // При клике на любой тариф открываем модалку с ботом
+            document.querySelectorAll('.tariff-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    tariffModal.style.display = 'none';
+                    modal.style.display = 'flex';
+                });
+            });
+
+            // Закрыть по клику вне окна тарифов
+            window.addEventListener('click', (e) => {
+                if (e.target === tariffModal) {
+                    tariffModal.style.display = 'none';
                 }
             });
 
